@@ -1,34 +1,61 @@
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.Random;
 
 public class LTS {
 
-    private int itsId;
+    private static final double DEFAULT_DRY_MASS = 620500;
+    private static final double DEFAULT_FUEL_MASS = 3800000;
+    private static final double DEFAULT_CARGO_MASS = 0;
+    private static final int MIN_MISSION_TIME = 200;
+    private static final int MISSION_INCREMENT = 5;
+    private static final double FUEL_CONSUMPTION_RATE = 0.01;
+
+    private int ltsId;
     private LocalDate dateManufactured;
     private double dryMass;
     private double fuelMass;
     private double cargoMass;
-    private double grossMass;
+    //private double grossMass;
     private String manufacturer;
     private int missionTime;
 
+    private final double initialFuelMass;
+
+    private static HashSet<Integer> usedIds = new HashSet<>();
+
     public LTS(){
-        this(3800000, 0);
+        this(DEFAULT_FUEL_MASS, DEFAULT_CARGO_MASS);
     }
 
     public LTS(double fuelMass, double cargoMass) {
-        Random idGenerator = new Random();
 
         this.fuelMass = fuelMass;
+        this.initialFuelMass = fuelMass;
         this.cargoMass = cargoMass;
-        this.dryMass = 620500;
-        this.itsId = 100000 + idGenerator.nextInt(900000);
+        this.dryMass = DEFAULT_DRY_MASS;
+        this.ltsId = generateUniqueRandomId();
         this.missionTime = 0;
-        this.cargoMass = 0;
+        //this.grossMass = this.dryMass + this.fuelMass + this.cargoMass;
         this.manufacturer = "Celestial Transport Technologies";
         this.dateManufactured = LocalDate.now();
 
+    }
+
+    /*private void updateGrossMass() {
+        this.grossMass = dryMass + fuelMass + cargoMass;
+    }*/
+
+    private int generateUniqueRandomId() {
+        Random idGenerator = new Random();
+        int id;
+
+        do {
+            id = idGenerator.nextInt(900000) + 100000; // random 6-digit
+        } while (usedIds.contains(id));
+        usedIds.add(id);
+
+        return id;
     }
 
     public String getManufacturer() {
@@ -52,11 +79,11 @@ public class LTS {
     }
 
     public double getGrossMass() {
-        return grossMass;
+        return dryMass + fuelMass + cargoMass;
     }
 
-    public int getItsId() {
-        return itsId;
+    public int getLtsId() {
+        return ltsId;
     }
 
     public LocalDate getDateManufactured() {
@@ -64,23 +91,65 @@ public class LTS {
     }
 
     public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+        if(manufacturer != null && !manufacturer.isBlank())
+            this.manufacturer = manufacturer;
     }
 
     public void setFuelMass(double fuelMass) {
-        this.fuelMass = fuelMass;
+        if (fuelMass < 0) {
+            System.out.println("Fuel mass can't be negative, defaulting to 0");
+            this.fuelMass = 0;
+        }
+
+        else
+            this.fuelMass = fuelMass;
+        //updateGrossMass();
     }
 
     public void setCargoMass(double cargoMass) {
-        this.cargoMass = cargoMass;
+
+        if (fuelMass < 0) {
+            System.out.println("Cargo mass can't be negative, defaulting to 0");
+            this.cargoMass = 0;
+        }
+
+        else
+            this.cargoMass = cargoMass;
+        //updateGrossMass();
     }
 
     public void increaseMissionTime() {
 
+        double fuelConsumed = MISSION_INCREMENT * initialFuelMass * FUEL_CONSUMPTION_RATE;
+        missionTime += MISSION_INCREMENT;
+
+        if (fuelMass >= fuelConsumed) {
+            fuelMass -= fuelConsumed;
+        } else {
+            fuelMass = 0;
+            System.out.println("Warning: you ran out of fuel!");
+        }
+
+        //updateGrossMass();
     }
 
-    public void deployCargo() {
+    public boolean deployCargo() {
 
+        if (missionTime < MIN_MISSION_TIME) {
+            System.out.println("Cannot deploy yet, only after 200 seconds");
+            return false;
+        }
+
+        if (cargoMass <= 0) {
+            System.out.println("No cargo to deploy");
+            return false;
+        }
+
+        cargoMass = 0;
+        //updateGrossMass();
+
+        System.out.println("Cargo deployed successfully!");
+        return true;
     }
 
 }
