@@ -108,7 +108,7 @@ public class LTS {
 
     public void setCargoMass(double cargoMass) {
 
-        if (fuelMass < 0) {
+        if (cargoMass < 0) {
             System.out.println("Cargo mass can't be negative, defaulting to 0");
             this.cargoMass = 0;
         }
