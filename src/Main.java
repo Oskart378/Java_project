@@ -18,4 +18,9 @@ public class Main {
         // Test cargo development
         defaultLTS.deployCargo(); // might print error if < 200 seconds
     }
+
+    public static void showLTSInfo() {
+
+    }
+
 }

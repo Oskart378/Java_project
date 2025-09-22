@@ -33,7 +33,7 @@ public class LTS {
 
     public LTS(double fuelMass, double cargoMass) {
 
-        this.initialFuelMass = (fuelMass >= 0) ? fuelMass : DEFAULT_FUEL_MASS;
+        this.initialFuelMass = (fuelMass >= 0) ? fuelMass : 0;
         setFuelMass(fuelMass);
         setCargoMass(cargoMass);
         this.dryMass = DEFAULT_DRY_MASS;
@@ -76,6 +76,14 @@ public class LTS {
         return id;
     }
 
+    private boolean isCargoDeployed() {
+        return cargoMass <= 0;
+    }
+
+    private boolean hasFuel(double fuelConsumed){
+        return fuelMass >= fuelConsumed;
+    }
+
     public String getManufacturer() {
         return manufacturer;
     }
@@ -115,8 +123,8 @@ public class LTS {
 
     public void setFuelMass(double fuelMass) {
         if (fuelMass < 0) {
-            System.out.println("Fuel mass can't be negative, defaulting to " + DEFAULT_FUEL_MASS);
-            this.fuelMass = DEFAULT_FUEL_MASS;
+            System.out.println("Fuel mass can't be negative, defaulting to 0");
+            this.fuelMass = 0;
         }
 
         else
@@ -127,8 +135,8 @@ public class LTS {
     public void setCargoMass(double cargoMass) {
 
         if (cargoMass < 0) {
-            System.out.println("Cargo mass can't be negative, defaulting to " + DEFAULT_CARGO_MASS);
-            this.cargoMass = DEFAULT_CARGO_MASS;
+            System.out.println("Cargo mass can't be negative, defaulting to 0");
+            this.cargoMass = 0;
         }
 
         else
@@ -141,7 +149,7 @@ public class LTS {
         double fuelConsumed = MISSION_INCREMENT * initialFuelMass * FUEL_CONSUMPTION_RATE;
         missionTime += MISSION_INCREMENT;
 
-        if (fuelMass >= fuelConsumed) {
+        if (hasFuel(fuelConsumed)) {
             fuelMass -= fuelConsumed;
         } else {
             fuelMass = 0;
@@ -158,7 +166,7 @@ public class LTS {
             return false;
         }
 
-        if (cargoMass <= 0) {
+        if (isCargoDeployed()) {
             System.out.println("No cargo to deploy");
             return false;
         }
@@ -169,5 +177,7 @@ public class LTS {
         System.out.println("Cargo deployed successfully!");
         return true;
     }
+
+
 
 }
