@@ -11,9 +11,10 @@ public class LTS {
     private static final int MISSION_INCREMENT = 5;
     private static final double FUEL_CONSUMPTION_RATE = 0.01;
 
-    private int ltsId;
-    private LocalDate dateManufactured;
-    private double dryMass;
+    private final int ltsId;
+    private final LocalDate dateManufactured;
+    private final double dryMass;
+
     private double fuelMass;
     private double cargoMass;
     //private double grossMass;
@@ -22,7 +23,7 @@ public class LTS {
 
     private final double initialFuelMass;
 
-    private static HashSet<Integer> usedIds = new HashSet<>();
+    private static final HashSet<Integer> usedIds = new HashSet<>();
 
     public LTS(){
         this(DEFAULT_FUEL_MASS, DEFAULT_CARGO_MASS);
