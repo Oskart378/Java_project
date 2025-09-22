@@ -11,10 +11,13 @@ public class LTS {
     private static final int MISSION_INCREMENT = 5;
     private static final double FUEL_CONSUMPTION_RATE = 0.01;
 
+    private static final Random idGenerator = new Random();
+    private static final HashSet<Integer> usedIds = new HashSet<>();
+
     private final int ltsId;
     private final LocalDate dateManufactured;
     private final double dryMass;
-    private static final Random idGenerator = new Random();
+    private final double initialFuelMass;
 
     private double fuelMass;
     private double cargoMass;
@@ -22,9 +25,7 @@ public class LTS {
     private String manufacturer;
     private int missionTime;
 
-    private final double initialFuelMass;
 
-    private static final HashSet<Integer> usedIds = new HashSet<>();
 
     public LTS(){
         this(DEFAULT_FUEL_MASS, DEFAULT_CARGO_MASS);
