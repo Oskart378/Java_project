@@ -14,6 +14,7 @@ public class LTS {
     private final int ltsId;
     private final LocalDate dateManufactured;
     private final double dryMass;
+    private static final Random idGenerator = new Random();
 
     private double fuelMass;
     private double cargoMass;
@@ -53,9 +54,7 @@ public class LTS {
             throw new RuntimeException("No more unique IDs available");
         }
 
-        Random idGenerator = new Random();
         int id;
-
 
         // If the HashSet is more than 80% full, switch to sequential id search which is more efficient
         if (usedIds.size() > 800000) {
