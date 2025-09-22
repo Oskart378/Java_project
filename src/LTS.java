@@ -30,9 +30,9 @@ public class LTS {
 
     public LTS(double fuelMass, double cargoMass) {
 
-        this.fuelMass = fuelMass;
-        this.initialFuelMass = fuelMass;
-        this.cargoMass = cargoMass;
+        this.initialFuelMass = (fuelMass >= 0) ? fuelMass : DEFAULT_FUEL_MASS;
+        setFuelMass(fuelMass);
+        setCargoMass(cargoMass);
         this.dryMass = DEFAULT_DRY_MASS;
         this.ltsId = generateUniqueRandomId();
         this.missionTime = 0;
@@ -47,9 +47,26 @@ public class LTS {
     }*/
 
     private int generateUniqueRandomId() {
+
+        if (usedIds.size() >= 900000) {
+            throw new RuntimeException("No more unique IDs available");
+        }
+
         Random idGenerator = new Random();
         int id;
 
+
+        // If the HashSet is more than 80% full, switch to sequential id search which is more efficient
+        if (usedIds.size() > 800000) {
+            for (int i = 100000; i <= 999999; i++) {
+                if (!usedIds.contains(i)) {
+                    usedIds.add(i);
+                    return i;
+                }
+            }
+        }
+
+        //otherwise use random ID generation
         do {
             id = idGenerator.nextInt(900000) + 100000; // random 6-digit
         } while (usedIds.contains(id));
@@ -97,8 +114,8 @@ public class LTS {
 
     public void setFuelMass(double fuelMass) {
         if (fuelMass < 0) {
-            System.out.println("Fuel mass can't be negative, defaulting to 0");
-            this.fuelMass = 0;
+            System.out.println("Fuel mass can't be negative, defaulting to " + DEFAULT_FUEL_MASS);
+            this.fuelMass = DEFAULT_FUEL_MASS;
         }
 
         else
@@ -109,8 +126,8 @@ public class LTS {
     public void setCargoMass(double cargoMass) {
 
         if (cargoMass < 0) {
-            System.out.println("Cargo mass can't be negative, defaulting to 0");
-            this.cargoMass = 0;
+            System.out.println("Cargo mass can't be negative, defaulting to " + DEFAULT_CARGO_MASS);
+            this.cargoMass = DEFAULT_CARGO_MASS;
         }
 
         else
