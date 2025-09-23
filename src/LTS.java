@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class LTS {
 
-    private static final double DEFAULT_DRY_MASS = 620500;
-    private static final double DEFAULT_FUEL_MASS = 3800000;
+    private static final double DEFAULT_DRY_MASS = 620_500;
+    private static final double DEFAULT_FUEL_MASS = 3_800_000;
     private static final double DEFAULT_CARGO_MASS = 0;
     private static final int MIN_MISSION_TIME = 200;
     private static final int MISSION_INCREMENT = 5;
@@ -24,7 +24,10 @@ public class LTS {
     //private double grossMass;
     private String manufacturer;
     private int missionTime;
+    //private boolean outOfFuel;
 
+    public enum FuelStatus {HAS_FUEL, NO_FUEL}
+    public enum CargoStatus { TOO_EARLY, NO_CARGO , SUCCESS }
 
 
     public LTS(){
@@ -42,6 +45,7 @@ public class LTS {
         //this.grossMass = this.dryMass + this.fuelMass + this.cargoMass;
         this.manufacturer = "Celestial Transport Technologies";
         this.dateManufactured = LocalDate.now();
+        //this.outOfFuel = false;
 
     }
 
@@ -117,8 +121,12 @@ public class LTS {
     }
 
     public void setManufacturer(String manufacturer) {
-        if(manufacturer != null && !manufacturer.isBlank())
+        if(manufacturer != null && !manufacturer.isBlank()){
             this.manufacturer = manufacturer;
+        }
+        else
+            System.out.println("Manufacturer can't be null or empty string");
+
     }
 
     public void setFuelMass(double fuelMass) {
@@ -144,40 +152,50 @@ public class LTS {
         //updateGrossMass();
     }
 
-    public void increaseMissionTime() {
+    public FuelStatus increaseMissionTime() {
 
-        double fuelConsumed = MISSION_INCREMENT * initialFuelMass * FUEL_CONSUMPTION_RATE;
+        double fuelConsumed = MISSION_INCREMENT * (initialFuelMass * FUEL_CONSUMPTION_RATE);
         missionTime += MISSION_INCREMENT;
 
         if (hasFuel(fuelConsumed)) {
             fuelMass -= fuelConsumed;
+
         } else {
             fuelMass = 0;
-            System.out.println("Warning: you ran out of fuel!");
         }
 
+        return (fuelMass > 0) ? FuelStatus.HAS_FUEL : FuelStatus.NO_FUEL;
         //updateGrossMass();
     }
 
-    public boolean deployCargo() {
+    public CargoStatus deployCargo() {
 
         if (missionTime < MIN_MISSION_TIME) {
-            System.out.println("Cannot deploy yet, only after 200 seconds");
-            return false;
+            return CargoStatus.TOO_EARLY;
         }
 
         if (isCargoDeployed()) {
-            System.out.println("No cargo to deploy");
-            return false;
+            return CargoStatus.NO_CARGO;
         }
 
         cargoMass = 0;
         //updateGrossMass();
 
-        System.out.println("Cargo deployed successfully!");
-        return true;
+        //System.out.println("Cargo deployed successfully!");
+        return CargoStatus.SUCCESS;
     }
 
 
+    @Override
+    public String toString() {
+        return "LTS ID: " + ltsId + "\n" +
+                "Date Manufactured: " + dateManufactured + "\n" +
+                "Dry Mass: " + dryMass + "\n" +
+                "Fuel Mass: " + fuelMass + "\n" +
+                "Cargo Mass: " + cargoMass + "\n" +
+                "Gross Mass: " + getGrossMass() + "\n" +
+                "Mission Time: " + missionTime + "\n" +
+                "Manufacturer: " + manufacturer;
+    }
 
 }
