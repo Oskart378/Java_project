@@ -165,18 +165,19 @@ public class LTS {
     //LTS main functions
     public FuelStatus increaseMissionTime() {
 
+        LTS.FuelStatus fuelStatus = FuelStatus.HAS_FUEL;
         double fuelConsumed = MISSION_INCREMENT * (initialFuelMass * FUEL_CONSUMPTION_RATE);
         missionTime += MISSION_INCREMENT;
 
         if (hasFuel(fuelConsumed)) {
             fuelMass -= fuelConsumed;
-
         } else {
             fuelMass = 0;
+            fuelStatus = FuelStatus.NO_FUEL;
         }
 
         updateGrossMass();
-        return (fuelMass > 0) ? FuelStatus.HAS_FUEL : FuelStatus.NO_FUEL;
+        return fuelStatus;
 
     }
 

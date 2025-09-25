@@ -10,7 +10,7 @@ public class Main {
 
         System.out.println("===== Testing setters and getters =====");
         lts2.setManufacturer("New Manufacturer Inc.");
-        lts2.setFuelMass(2500000);
+        //lts2.setFuelMass(2500000);
         lts2.setCargoMass(10000);
         System.out.println(lts2 + "\n");
 
@@ -18,8 +18,9 @@ public class Main {
 
         while (lts2.getMissionTime() < 240) {
             LTS.FuelStatus fuelStatus = lts2.increaseMissionTime();
-            //if (fuelStatus == LTS.FuelStatus.NO_FUEL)
+            if (fuelStatus == LTS.FuelStatus.NO_FUEL)
                 System.out.println(fuelStatusMessage(fuelStatus) + "============");
+                System.out.println("fuel: " + lts2.getFuelMass() + "\tMission time: " + lts2.getMissionTime());
         }
 
         System.out.println(lts2 + "\n");
