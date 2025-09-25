@@ -16,10 +16,10 @@ public class Main {
 
         System.out.println("===== Testing increase mission and fuel status");
 
-        while (lts2.getMissionTime() < 210) {
+        while (lts2.getMissionTime() < 240) {
             LTS.FuelStatus fuelStatus = lts2.increaseMissionTime();
-            if (fuelStatus == LTS.FuelStatus.NO_FUEL)
-                System.out.println("Warning: LTS is out of fuel at mission time " + lts2.getMissionTime() + "s!");
+            //if (fuelStatus == LTS.FuelStatus.NO_FUEL)
+                System.out.println(fuelStatusMessage(fuelStatus) + "============");
         }
 
         System.out.println(lts2 + "\n");
@@ -51,7 +51,7 @@ public class Main {
             case LTS.CargoStatus.TOO_EARLY -> "Deployed too early";
             case LTS.CargoStatus.SUCCESS -> "Successful deploy";
             case LTS.CargoStatus.NO_CARGO -> "There is not cargo to deploy";
-            default -> null;
+
         };
     }
 

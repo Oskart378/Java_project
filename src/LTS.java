@@ -4,36 +4,42 @@ import java.util.Random;
 
 public class LTS {
 
-    private static final double DEFAULT_DRY_MASS = 620_500;
-    private static final double DEFAULT_FUEL_MASS = 3_800_000;
+    //Constants and default values
+    private static final double DEFAULT_DRY_MASS = 620500;
+    private static final double DEFAULT_FUEL_MASS = 3800000;
     private static final double DEFAULT_CARGO_MASS = 0;
     private static final int MIN_MISSION_TIME = 200;
     private static final int MISSION_INCREMENT = 5;
     private static final double FUEL_CONSUMPTION_RATE = 0.01;
 
+    //Static helper properties
     private static final Random idGenerator = new Random();
     private static final HashSet<Integer> usedIds = new HashSet<>();
 
+    //Constant private fields
     private final int ltsId;
     private final LocalDate dateManufactured;
     private final double dryMass;
     private final double initialFuelMass;
 
+    //Fields
     private double fuelMass;
     private double cargoMass;
-    //private double grossMass;
+    private double grossMass;
     private String manufacturer;
     private int missionTime;
-    //private boolean outOfFuel;
 
+
+    //Helper Enums that represent status for fuel and cargo
     public enum FuelStatus {HAS_FUEL, NO_FUEL}
     public enum CargoStatus { TOO_EARLY, NO_CARGO , SUCCESS }
 
-
+    //Empty constructor
     public LTS(){
         this(DEFAULT_FUEL_MASS, DEFAULT_CARGO_MASS);
     }
 
+    //Two parameters constructor for fuelMass and cargoMass
     public LTS(double fuelMass, double cargoMass) {
 
         this.initialFuelMass = (fuelMass >= 0) ? fuelMass : 0;
@@ -42,16 +48,16 @@ public class LTS {
         this.dryMass = DEFAULT_DRY_MASS;
         this.ltsId = generateUniqueRandomId();
         this.missionTime = 0;
-        //this.grossMass = this.dryMass + this.fuelMass + this.cargoMass;
+        updateGrossMass();
         this.manufacturer = "Celestial Transport Technologies";
         this.dateManufactured = LocalDate.now();
-        //this.outOfFuel = false;
 
     }
 
-    /*private void updateGrossMass() {
+    //Helper methods
+    private void updateGrossMass() {
         this.grossMass = dryMass + fuelMass + cargoMass;
-    }*/
+    }
 
     private int generateUniqueRandomId() {
 
@@ -73,7 +79,7 @@ public class LTS {
 
         //otherwise use random ID generation
         do {
-            id = idGenerator.nextInt(900000) + 100000; // random 6-digit
+            id = idGenerator.nextInt(900000) + 100000; // random 6 digits id
         } while (usedIds.contains(id));
         usedIds.add(id);
 
@@ -88,6 +94,7 @@ public class LTS {
         return fuelMass >= fuelConsumed;
     }
 
+    //Properties getters
     public String getManufacturer() {
         return manufacturer;
     }
@@ -120,6 +127,8 @@ public class LTS {
         return dateManufactured;
     }
 
+
+    //Properties setters
     public void setManufacturer(String manufacturer) {
         if(manufacturer != null && !manufacturer.isBlank()){
             this.manufacturer = manufacturer;
@@ -137,7 +146,7 @@ public class LTS {
 
         else
             this.fuelMass = fuelMass;
-        //updateGrossMass();
+        updateGrossMass();
     }
 
     public void setCargoMass(double cargoMass) {
@@ -149,9 +158,11 @@ public class LTS {
 
         else
             this.cargoMass = cargoMass;
-        //updateGrossMass();
+
+        updateGrossMass();
     }
 
+    //LTS main functions
     public FuelStatus increaseMissionTime() {
 
         double fuelConsumed = MISSION_INCREMENT * (initialFuelMass * FUEL_CONSUMPTION_RATE);
@@ -164,8 +175,9 @@ public class LTS {
             fuelMass = 0;
         }
 
+        updateGrossMass();
         return (fuelMass > 0) ? FuelStatus.HAS_FUEL : FuelStatus.NO_FUEL;
-        //updateGrossMass();
+
     }
 
     public CargoStatus deployCargo() {
@@ -179,13 +191,13 @@ public class LTS {
         }
 
         cargoMass = 0;
-        //updateGrossMass();
-
+        updateGrossMass();
         //System.out.println("Cargo deployed successfully!");
         return CargoStatus.SUCCESS;
     }
 
 
+    //Override string so you display the state of the object
     @Override
     public String toString() {
         return "LTS ID: " + ltsId + "\n" +
@@ -193,7 +205,7 @@ public class LTS {
                 "Dry Mass: " + dryMass + "\n" +
                 "Fuel Mass: " + fuelMass + "\n" +
                 "Cargo Mass: " + cargoMass + "\n" +
-                "Gross Mass: " + getGrossMass() + "\n" +
+                "Gross Mass: " + grossMass + "\n" +
                 "Mission Time: " + missionTime + "\n" +
                 "Manufacturer: " + manufacturer;
     }
