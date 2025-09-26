@@ -68,7 +68,7 @@ public class Main {
         return switch (cargoStatus) {
             case LTS.CargoStatus.TOO_EARLY -> "Deployed too early";
             case LTS.CargoStatus.SUCCESS -> "Successful deploy";
-            case LTS.CargoStatus.NO_CARGO -> "There is not cargo to deploy";
+            case LTS.CargoStatus.NO_CARGO -> "There is no cargo to deploy";
 
         };
     }
